@@ -5,11 +5,8 @@ import ua.goit.jdbc.config.PostgresProvider;
 import ua.goit.jdbc.config.PropertiesUtil;
 import ua.goit.jdbc.dataLayer.DevelopersRepository;
 import ua.goit.jdbc.dataLayer.ProjectsRepository;
-import ua.goit.jdbc.dataLayer.Repository;
 import ua.goit.jdbc.model.converter.DevelopersConverter;
 import ua.goit.jdbc.model.converter.ProjectsConverter;
-import ua.goit.jdbc.model.dao.DevelopersDao;
-import ua.goit.jdbc.model.dao.ProjectsDao;
 import ua.goit.jdbc.model.dto.DevelopersDto;
 import ua.goit.jdbc.model.dto.ProjectsDto;
 import ua.goit.jdbc.service.DevelopersService;
@@ -25,13 +22,13 @@ public class Main {
         DatabaseManager dbConnector = new PostgresProvider(
                 util.getHostname(), util.getPort(), util.getSchema(), util.getUser(), util.getPassword());
 
-        Repository<DevelopersDao> devDaoRepository = new DevelopersRepository(dbConnector);
-        DevelopersConverter devConvertor = new DevelopersConverter();
-        DevelopersService developersService = new DevelopersService(devConvertor, devDaoRepository);
+        DevelopersRepository developersRepository = new DevelopersRepository(dbConnector);
+        DevelopersConverter developersConverter = new DevelopersConverter();
+        DevelopersService developersService = new DevelopersService(developersConverter, developersRepository);
 
-        Repository<ProjectsDao> projectsDaoRepository = new ProjectsRepository(dbConnector);
+        ProjectsRepository projectsRepository = new ProjectsRepository(dbConnector);
         ProjectsConverter projectsConverter = new ProjectsConverter();
-        ProjectsService projectsService = new ProjectsService(projectsConverter, projectsDaoRepository);
+        ProjectsService projectsService = new ProjectsService(projectsConverter, projectsRepository);
 
         // form to create/update developer
         DevelopersDto developersDto = new DevelopersDto();
@@ -61,10 +58,9 @@ public class Main {
         // delete developer
 //        developersService.delete(developersDto);
 
-
         // form to create/update developer
         ProjectsDto projectDto = new ProjectsDto();
-        projectDto.setId(7);
+        projectDto.setId(8);
         projectDto.setName("Hotel booking");
         projectDto.setDescription("Application for booking hotels around the world");
         projectDto.setCompanyId(1);
@@ -81,7 +77,31 @@ public class Main {
 //        List<ProjectsDto> projectsAll = projectsService.read();
 //        System.out.println(projectsAll.toString());
 
+        // update project
+//        final int projectUpdate = projectsService.update(projectDto);
+//        System.out.println("UPDATED columns count " + projectUpdate);
+
         // delete project
 //        projectsService.delete(projectDto);
+
+        // show amount of salary for one project by id
+//        final int sumSalary = projectsRepository.getAmountOfSalaryForOneProject(1);
+//        System.out.println("The amount salary developers of the project " + sumSalary);
+
+        // show developers of project by id
+//        List<DevelopersDto> listOfDevelopersOfProjectById = developersService.developersOfProjectById(1);
+//        System.out.println(listOfDevelopersOfProjectById);
+
+        // show developers of project by name
+//        List<DevelopersDto> listOfDevelopersOfProjectByName = developersService.developersOfProjectByName("Autopilot");
+//        System.out.println(listOfDevelopersOfProjectByName);
+
+        // show developers by industry
+//        List<DevelopersDto> listOfDevelopersByIndustry = developersService.developersOfIndustry("Java");
+//        System.out.println(listOfDevelopersByIndustry);
+
+        // show developers by skill level
+//        List<DevelopersDto> listOfDevelopersBySkillLevel = developersService.developersBySkillLevel("Middle");
+//        System.out.println(listOfDevelopersBySkillLevel);
     }
 }

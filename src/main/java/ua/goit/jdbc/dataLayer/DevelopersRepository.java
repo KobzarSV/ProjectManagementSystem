@@ -21,6 +21,22 @@ public class DevelopersRepository implements Repository<DevelopersDao> {
     private static final String UPDATE =
             "UPDATE developers d SET first_name = ?, last_name = ?, age = ?, gender = ?, mail = ?, company_id = ?, salary = ? WHERE d.id = ?";
     private static final String DELETE = "DELETE FROM developers WHERE id = ?";
+    private static final String DEVELOPERS_OF_PROJECT_BY_ID = "SELECT * FROM developers d\n" +
+            "\tINNER JOIN developers_projects dp ON dp.developer_id = d.id\n" +
+            "\tINNER JOIN projects p ON dp.project_id = p.id\n" +
+            "\tWHERE p.id = ?;";
+    private static final String DEVELOPERS_OF_PROJECT_BY_NAME = "SELECT * FROM developers d\n" +
+            "\tINNER JOIN developers_projects dp ON dp.developer_id = d.id\n" +
+            "\tINNER JOIN projects p ON dp.project_id = p.id\n" +
+            "\tWHERE p.name = ?;";
+    private static final String ALL_DEVELOPERS_BY_INDUSTRY = "SELECT * FROM developers d\n" +
+            "           INNER JOIN developers_skills ds ON d.id = ds.developer_id\n" +
+            "           INNER JOIN skills s ON s.id = ds.skill_id\n" +
+            "           WHERE s.industry = ?;";
+    private static final String ALL_DEVELOPERS_BY_SKILL_LEVEL = "SELECT * FROM developers d\n" +
+            "           INNER JOIN developers_skills ds ON d.id = ds.developer_id\n" +
+            "           INNER JOIN skills s ON s.id = ds.skill_id\n" +
+            "           WHERE s.skill_level = ?;";
 
     public DevelopersRepository(DatabaseManager connector) {
         this.connector = connector;
@@ -61,7 +77,7 @@ public class DevelopersRepository implements Repository<DevelopersDao> {
         try (Connection connection = connector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(READ_ALL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
-            return mapToDevelopersDaoAll(resultSet);
+            return mapToDevelopersList(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -99,6 +115,54 @@ public class DevelopersRepository implements Repository<DevelopersDao> {
         }
     }
 
+    public List<DevelopersDao> getDevOfProjectById(int id) {
+        try (Connection connection = connector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DEVELOPERS_OF_PROJECT_BY_ID)) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return mapToDevelopersList(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return List.of();
+    }
+
+    public List<DevelopersDao> getDevOfProjectByName(String nameProject) {
+        try (Connection connection = connector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DEVELOPERS_OF_PROJECT_BY_NAME)) {
+            preparedStatement.setString(1, nameProject);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return mapToDevelopersList(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return List.of();
+    }
+
+    public List<DevelopersDao> getAllDevelopersByIndustry(String industry) {
+        try (Connection connection = connector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(ALL_DEVELOPERS_BY_INDUSTRY)) {
+            preparedStatement.setString(1, industry);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return mapToDevelopersList(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return List.of();
+    }
+
+    public List<DevelopersDao> getAllDevelopersBySkillLevel(String skillLevel) {
+        try (Connection connection = connector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(ALL_DEVELOPERS_BY_SKILL_LEVEL)) {
+            preparedStatement.setString(1, skillLevel);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return mapToDevelopersList(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return List.of();
+    }
+
     private Optional<DevelopersDao> mapToDevelopersDao(ResultSet resultSet) throws SQLException {
         DevelopersDao developersDao = null;
         while (resultSet.next()) {
@@ -115,7 +179,7 @@ public class DevelopersRepository implements Repository<DevelopersDao> {
         return Optional.ofNullable(developersDao);
     }
 
-    private List<DevelopersDao> mapToDevelopersDaoAll(ResultSet resultSet) throws SQLException {
+    private List<DevelopersDao> mapToDevelopersList(ResultSet resultSet) throws SQLException {
         List<DevelopersDao> developers = new ArrayList<>();
         while (resultSet.next()) {
             DevelopersDao developersDao = null;

@@ -1,5 +1,7 @@
 package ua.goit.jdbc.model.dto;
 
+import java.util.List;
+
 public class DevelopersDto {
     private Integer id;
     private String name;

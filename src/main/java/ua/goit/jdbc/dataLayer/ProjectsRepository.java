@@ -22,6 +22,10 @@ public class ProjectsRepository implements Repository<ProjectsDao> {
     private static final String UPDATE =
             "UPDATE projects p SET name = ?, description = ?, company_id = ?, customer_id = ? WHERE p.id = ?";
     private static final String DELETE = "DELETE FROM projects WHERE id = ?";
+    private static final String AMOUNT_OF_SALARY_FOR_ONE_PROJECT = "SELECT SUM(d.salary) AS sum FROM projects p\n" +
+            "            INNER JOIN developers_projects dp ON p.id = dp.project_id\n" +
+            "            INNER JOIN developers d ON d.id = dp.developer_id\n" +
+            "            WHERE p.id = ?;";
 
     public ProjectsRepository(DatabaseManager connector) {
         this.connector = connector;
@@ -75,7 +79,7 @@ public class ProjectsRepository implements Repository<ProjectsDao> {
             preparedStatement.setString(2, projectsDao.getDescription());
             preparedStatement.setInt(3, projectsDao.getCompanyId());
             preparedStatement.setInt(4, projectsDao.getCustomerId());
-            preparedStatement.setInt(4, projectsDao.getId());
+            preparedStatement.setInt(5, projectsDao.getId());
             columsUpdeted = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -92,6 +96,18 @@ public class ProjectsRepository implements Repository<ProjectsDao> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getAmountOfSalaryForOneProject(int id) {
+        try (Connection connection = connector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(AMOUNT_OF_SALARY_FOR_ONE_PROJECT)) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return mapToSum(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     private Optional<ProjectsDao> mapToProjectsDao(ResultSet resultSet) throws SQLException {
@@ -120,5 +136,13 @@ public class ProjectsRepository implements Repository<ProjectsDao> {
             projects.add(projectsDao);
         }
         return projects;
+    }
+
+    private int mapToSum(ResultSet resultSet) throws SQLException {
+        int result = 0;
+        while (resultSet.next()) {
+            result = resultSet.getInt("sum");
+        }
+        return result;
     }
 }
