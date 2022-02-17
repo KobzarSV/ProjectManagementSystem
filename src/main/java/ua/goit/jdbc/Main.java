@@ -103,5 +103,9 @@ public class Main {
         // show developers by skill level
 //        List<DevelopersDto> listOfDevelopersBySkillLevel = developersService.developersBySkillLevel("Middle");
 //        System.out.println(listOfDevelopersBySkillLevel);
+
+        // show projects: date, name and count developers
+        List projectsInfo = projectsRepository.getProjectsDateAndCountDev();
+        System.out.println(projectsInfo);
     }
 }

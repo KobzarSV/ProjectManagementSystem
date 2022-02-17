@@ -49,3 +49,10 @@ INSERT INTO projects (name, description, company_id, customer_id)
 
 INSERT INTO developers_projects
 	VALUES (1, 1), (3, 1), (2, 3), (2, 2), (4, 4), (5, 6), (5, 5), (6, 3), (6, 2), (7, 6), (7, 5);
+
+UPDATE projects SET date = '2021-07-10' WHERE id = 1;
+UPDATE projects SET date = '2018-01-11' WHERE id = 2;
+UPDATE projects SET date = '2021-11-01' WHERE id = 3;
+UPDATE projects SET date = '2021-11-21' WHERE id = 4;
+UPDATE projects SET date = '2020-10-07' WHERE id = 5;
+UPDATE projects SET date = '2022-01-15' WHERE id = 6;

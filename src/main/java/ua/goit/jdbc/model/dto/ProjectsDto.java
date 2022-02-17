@@ -1,18 +1,22 @@
 package ua.goit.jdbc.model.dto;
 
+import java.util.Date;
+
 public class ProjectsDto {
     private Integer id;
     private String name;
     private String description;
     private Integer companyId;
     private Integer customerId;
+    private Date date;
 
-    public ProjectsDto(Integer id, String name, String description, Integer companyId, Integer customerId) {
+    public ProjectsDto(Integer id, String name, String description, Integer companyId, Integer customerId, Date date) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.companyId = companyId;
         this.customerId = customerId;
+        this.date = date;
     }
 
     public ProjectsDto() {
@@ -56,6 +60,14 @@ public class ProjectsDto {
 
     public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     @Override

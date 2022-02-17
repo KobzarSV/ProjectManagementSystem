@@ -22,10 +22,17 @@ public class ProjectsRepository implements Repository<ProjectsDao> {
     private static final String UPDATE =
             "UPDATE projects p SET name = ?, description = ?, company_id = ?, customer_id = ? WHERE p.id = ?";
     private static final String DELETE = "DELETE FROM projects WHERE id = ?";
-    private static final String AMOUNT_OF_SALARY_FOR_ONE_PROJECT = "SELECT SUM(d.salary) AS sum FROM projects p\n" +
-            "            INNER JOIN developers_projects dp ON p.id = dp.project_id\n" +
-            "            INNER JOIN developers d ON d.id = dp.developer_id\n" +
-            "            WHERE p.id = ?;";
+    private static final String AMOUNT_OF_SALARY_FOR_ONE_PROJECT =
+            "SELECT SUM(d.salary) AS sum FROM projects p\n" +
+                    "INNER JOIN developers_projects dp ON p.id = dp.project_id\n" +
+                    "INNER JOIN developers d ON d.id = dp.developer_id\n" +
+                    "WHERE p.id = ?;";
+    private static final String PROGECTS_DATE_AND_COUNT_DEVELOPERS =
+            "SELECT pr.date, pr.name, COUNT(d.id) FROM projects pr\n" +
+                    "INNER JOIN developers_projects dp ON dp.project_id = pr.id\n" +
+                    "INNER JOIN developers d ON dp.developer_id = d.id\n" +
+                    "GROUP BY pr.date, pr.name\n" +
+                    "ORDER BY pr.date;";
 
     public ProjectsRepository(DatabaseManager connector) {
         this.connector = connector;
@@ -108,6 +115,27 @@ public class ProjectsRepository implements Repository<ProjectsDao> {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public List getProjectsDateAndCountDev () {
+        try(Connection connection = connector.getConnection();
+        PreparedStatement ps = connection.prepareStatement(PROGECTS_DATE_AND_COUNT_DEVELOPERS)) {
+            ResultSet resultSet = ps.executeQuery();
+            return mapToProjectsDateDevDao(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return List.of();
+    }
+
+    private List mapToProjectsDateDevDao(ResultSet resultSet) throws SQLException {
+        List projects = new ArrayList<>();
+        while (resultSet.next()) {
+            projects.add(resultSet.getDate("date"));
+            projects.add(resultSet.getString("name"));
+            projects.add(resultSet.getInt("count"));
+        }
+        return projects;
     }
 
     private Optional<ProjectsDao> mapToProjectsDao(ResultSet resultSet) throws SQLException {
