@@ -9,9 +9,11 @@ public class DevelopersDao {
     private String mail;
     private Integer companyId;
     private Integer salary;
+    private String industry;
+    private String skillLevel;
 
     public DevelopersDao(Integer id, String firstName, String lastName, Integer age, String gender,
-                         String mail, Integer companyId, Integer salary) {
+                         String mail, Integer companyId, Integer salary, String industry, String skillLevel) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -20,6 +22,8 @@ public class DevelopersDao {
         this.mail = mail;
         this.companyId = companyId;
         this.salary = salary;
+        this.industry = industry;
+        this.skillLevel = skillLevel;
     }
 
     public DevelopersDao() {
@@ -87,5 +91,21 @@ public class DevelopersDao {
 
     public void setSalary(Integer salary) {
         this.salary = salary;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    public String getSkillLevel() {
+        return skillLevel;
+    }
+
+    public void setSkillLevel(String skillLevel) {
+        this.skillLevel = skillLevel;
     }
 }

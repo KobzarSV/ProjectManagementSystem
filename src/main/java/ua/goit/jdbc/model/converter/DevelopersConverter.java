@@ -13,6 +13,8 @@ public class DevelopersConverter {
         dto.setMail(developersDao.getMail());
         dto.setCompanyId(developersDao.getCompanyId());
         dto.setSalary(developersDao.getSalary());
+        dto.setIndustry(developersDao.getIndustry());
+        dto.setSkillLevel(developersDao.getSkillLevel());
         return dto;
     }
 
@@ -26,6 +28,8 @@ public class DevelopersConverter {
         dao.setMail(developersDto.getMail());
         dao.setCompanyId(developersDto.getCompanyId());
         dao.setSalary(developersDto.getSalary());
+        dao.setIndustry(developersDto.getIndustry());
+        dao.setSkillLevel(developersDto.getSkillLevel());
         return dao;
     }
 }

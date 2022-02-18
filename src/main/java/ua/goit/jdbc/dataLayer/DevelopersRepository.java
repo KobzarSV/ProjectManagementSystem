@@ -14,33 +14,45 @@ import java.util.Optional;
 public class DevelopersRepository implements Repository<DevelopersDao> {
     private final DatabaseManager connector;
 
-    private static final String CREATE =
-            "INSERT INTO developers (first_name, last_name, age, gender, mail, company_id, salary) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    private static final String READ_BY_ID = "SELECT * FROM developers d WHERE d.id = ?";
-    private static final String READ_ALL = "SELECT * FROM developers d";
-    private static final String UPDATE =
-            "UPDATE developers d SET first_name = ?, last_name = ?, age = ?, gender = ?, mail = ?, company_id = ?, salary = ? WHERE d.id = ?";
-    private static final String DELETE = "DELETE FROM developers WHERE id = ?";
-    private static final String DEVELOPERS_OF_PROJECT_BY_ID = "SELECT * FROM developers d\n" +
-            "\tINNER JOIN developers_projects dp ON dp.developer_id = d.id\n" +
-            "\tINNER JOIN projects p ON dp.project_id = p.id\n" +
-            "\tWHERE p.id = ?;";
-    private static final String DEVELOPERS_OF_PROJECT_BY_NAME = "SELECT * FROM developers d\n" +
-            "\tINNER JOIN developers_projects dp ON dp.developer_id = d.id\n" +
-            "\tINNER JOIN projects p ON dp.project_id = p.id\n" +
-            "\tWHERE p.name = ?;";
-    private static final String ALL_DEVELOPERS_BY_INDUSTRY = "SELECT * FROM developers d\n" +
-            "           INNER JOIN developers_skills ds ON d.id = ds.developer_id\n" +
-            "           INNER JOIN skills s ON s.id = ds.skill_id\n" +
-            "           WHERE s.industry = ?;";
-    private static final String ALL_DEVELOPERS_BY_SKILL_LEVEL = "SELECT * FROM developers d\n" +
-            "           INNER JOIN developers_skills ds ON d.id = ds.developer_id\n" +
-            "           INNER JOIN skills s ON s.id = ds.skill_id\n" +
-            "           WHERE s.skill_level = ?;";
-
     public DevelopersRepository(DatabaseManager connector) {
         this.connector = connector;
     }
+
+    private static final String CREATE =
+            "INSERT INTO developers (first_name, last_name, age, gender, mail, company_id, salary) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?);";
+    private static final String READ_BY_ID =
+            "SELECT d.id, d.first_name, d.last_name, d.age, d.gender, d.mail, d.company_id, d.salary, " +
+                    "s.industry, s.skill_level FROM developers d \n" +
+                    "LEFT JOIN developers_skills ds ON d.id = ds.developer_id\n" +
+                    "LEFT JOIN skills s ON s.id = ds.skill_id\n" +
+                    "WHERE d.id = ?;";
+    private static final String READ_ALL = "SELECT * FROM developers d;";
+    private static final String UPDATE =
+            "UPDATE developers d SET first_name = ?, last_name = ?, age = ?, gender = ?, mail = ?, " +
+                    "company_id = ?, salary = ? WHERE d.id = ?;";
+    private static final String DELETE = "DELETE FROM developers_skills WHERE developer_id = ?;\n" +
+            "DELETE FROM developers WHERE id = ?;";
+    private static final String DEVELOPERS_OF_PROJECT_BY_ID =
+            "SELECT * FROM developers d\n" +
+                    "INNER JOIN developers_projects dp ON dp.developer_id = d.id\n" +
+                    "INNER JOIN projects p ON dp.project_id = p.id\n" +
+                    "WHERE p.id = ?;";
+    private static final String DEVELOPERS_OF_PROJECT_BY_NAME =
+            "SELECT * FROM developers d\n" +
+                    "INNER JOIN developers_projects dp ON dp.developer_id = d.id\n" +
+                    "INNER JOIN projects p ON dp.project_id = p.id\n" +
+                    "WHERE p.name = ?;";
+    private static final String ALL_DEVELOPERS_BY_INDUSTRY =
+            "SELECT * FROM developers d\n" +
+                    "INNER JOIN developers_skills ds ON d.id = ds.developer_id\n" +
+                    "INNER JOIN skills s ON s.id = ds.skill_id\n" +
+                    "WHERE s.industry = ?;";
+    private static final String ALL_DEVELOPERS_BY_SKILL_LEVEL =
+            "SELECT * FROM developers d\n" +
+                    "INNER JOIN developers_skills ds ON d.id = ds.developer_id\n" +
+                    "INNER JOIN skills s ON s.id = ds.skill_id\n" +
+                    "WHERE s.skill_level = ?;";
 
     @Override
     public void create(DevelopersDao developersDao) {
@@ -86,7 +98,7 @@ public class DevelopersRepository implements Repository<DevelopersDao> {
 
     @Override
     public int update(DevelopersDao developersDao) {
-        int columsUpdeted = 0;
+        int columnsUpdated = 0;
         try (Connection connection = connector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE)) {
             preparedStatement.setString(1, developersDao.getFirstName());
@@ -97,11 +109,11 @@ public class DevelopersRepository implements Repository<DevelopersDao> {
             preparedStatement.setInt(6, developersDao.getCompanyId());
             preparedStatement.setInt(7, developersDao.getSalary());
             preparedStatement.setInt(8, developersDao.getId());
-            columsUpdeted = preparedStatement.executeUpdate();
+            columnsUpdated = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return columsUpdeted;
+        return columnsUpdated;
     }
 
     @Override
@@ -109,6 +121,7 @@ public class DevelopersRepository implements Repository<DevelopersDao> {
         try (Connection connection = connector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, developersDao.getId());
+            preparedStatement.setInt(2, developersDao.getId());
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -175,6 +188,8 @@ public class DevelopersRepository implements Repository<DevelopersDao> {
             developersDao.setMail(resultSet.getString("mail"));
             developersDao.setCompanyId(resultSet.getInt("company_id"));
             developersDao.setSalary(resultSet.getInt("salary"));
+            developersDao.setIndustry(resultSet.getString("industry"));
+            developersDao.setSkillLevel(resultSet.getString("skill_level"));
         }
         return Optional.ofNullable(developersDao);
     }

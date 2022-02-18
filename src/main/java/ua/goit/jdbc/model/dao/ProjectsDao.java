@@ -1,6 +1,6 @@
 package ua.goit.jdbc.model.dao;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class ProjectsDao {
     private Integer id;
@@ -9,14 +9,17 @@ public class ProjectsDao {
     private Integer companyId;
     private Integer customerId;
     private Date date;
+    private Integer countDevelopers;
 
-    public ProjectsDao(Integer id, String name, String description, Integer companyId, Integer customerId, Date date) {
+    public ProjectsDao(Integer id, String name, String description, Integer companyId,
+                       Integer customerId, Date date, Integer countDevelopers) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.companyId = companyId;
         this.customerId = customerId;
         this.date = date;
+        this.countDevelopers = countDevelopers;
     }
 
     public ProjectsDao() {
@@ -68,5 +71,13 @@ public class ProjectsDao {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Integer getCountDevelopers() {
+        return countDevelopers;
+    }
+
+    public void setCountDevelopers(Integer countDevelopers) {
+        this.countDevelopers = countDevelopers;
     }
 }

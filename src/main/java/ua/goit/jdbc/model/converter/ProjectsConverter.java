@@ -12,6 +12,8 @@ public class ProjectsConverter {
         dto.setDescription(projectsDao.getDescription());
         dto.setCompanyId(projectsDao.getCompanyId());
         dto.setCustomerId(projectsDao.getCustomerId());
+        dto.setDate(projectsDao.getDate());
+        dto.setCountDevelopers(projectsDao.getCountDevelopers());
         return dto;
     }
 
@@ -22,6 +24,8 @@ public class ProjectsConverter {
         dao.setDescription(projectsDto.getDescription());
         dao.setCompanyId(projectsDto.getCompanyId());
         dao.setCustomerId(projectsDto.getCustomerId());
+        dao.setDate(projectsDto.getDate());
+        dao.setCountDevelopers(projectsDto.getCountDevelopers());
         return dao;
     }
 }
