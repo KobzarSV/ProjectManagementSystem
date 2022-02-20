@@ -1,12 +1,12 @@
 package ua.goit.jdbc.model.dto;
 
 public class SkillsDto {
-    private Integer DevelopersId;
+    private Integer developersId;
     private String industry;
     private String skillLevel;
 
     public SkillsDto(Integer id, String industry, String skillLevel) {
-        this.DevelopersId = id;
+        this.developersId = id;
         this.industry = industry;
         this.skillLevel = skillLevel;
     }
@@ -15,11 +15,11 @@ public class SkillsDto {
     }
 
     public Integer getDevelopersId() {
-        return DevelopersId;
+        return developersId;
     }
 
     public void setDevelopersId(Integer developersId) {
-        this.DevelopersId = developersId;
+        this.developersId = developersId;
     }
 
     public String getIndustry() {
