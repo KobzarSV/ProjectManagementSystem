@@ -155,3 +155,8 @@ UPDATE projects SET date = '2021-11-01' WHERE id = 3;
 UPDATE projects SET date = '2021-11-21' WHERE id = 4;
 UPDATE projects SET date = '2020-10-07' WHERE id = 5;
 UPDATE projects SET date = '2022-01-15' WHERE id = 6;
+
+ALTER TABLE companies RENAME COLUMN id TO company_id;
+ALTER TABLE companies RENAME COLUMN name TO company_name;
+ALTER TABLE customers RENAME COLUMN id TO customer_id;
+ALTER TABLE customers RENAME COLUMN name TO customer_name;
