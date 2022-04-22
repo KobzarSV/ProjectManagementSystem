@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class PostgresProvider implements DatabaseManager {
 
-    HikariDataSource dataSource;
+    private final HikariDataSource dataSource;
 
     public PostgresProvider(
             String hostname, int port, String databaseName, String username, String password, String jdbcDriver) {
@@ -23,8 +23,8 @@ public class PostgresProvider implements DatabaseManager {
         config.setJdbcUrl(String.format("jdbc:postgresql://%s:%d/%s", hostname, port, databaseName));
         config.setUsername(username);
         config.setPassword(password);
-        config.setMaximumPoolSize(10);
-        config.setIdleTimeout(100);
+        config.setMaximumPoolSize(2);
+        config.setIdleTimeout(200);
         this.dataSource = new HikariDataSource(config);
     }
 

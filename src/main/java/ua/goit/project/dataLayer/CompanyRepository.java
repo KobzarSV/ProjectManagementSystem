@@ -25,7 +25,10 @@ public class CompanyRepository implements Repository<CompanyDao> {
     private static final String FIND_ALL = "SELECT * FROM companies;";
     private static final String UPDATE =
             "UPDATE companies c SET company_name = ?, description = ?, number_of_employees = ? WHERE c.company_id = ?;";
-    private static final String DELETE = "DELETE FROM companies WHERE company_id = ?;";
+    private static final String DELETE =
+            "DELETE FROM projects WHERE company_id = ?;\n" +
+                    "UPDATE developers SET company_id = null WHERE company_id = ?;\n" +
+                    "DELETE FROM companies WHERE company_id = ?;";
 
     @Override
     public Integer create(CompanyDao companyDao) {
@@ -98,6 +101,8 @@ public class CompanyRepository implements Repository<CompanyDao> {
         try (Connection connection = connector.getConnection();
              PreparedStatement ps = connection.prepareStatement(DELETE)) {
             ps.setInt(1, id);
+            ps.setInt(2, id);
+            ps.setInt(3, id);
             ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -20,11 +20,12 @@ public class ProjectsRepository implements Repository<ProjectsDao> {
             "INSERT INTO projects (name, description, company_id, customer_id, date) VALUES (?, ?, ?, ?, ?)";
     private static final String FIND_BY_ID = "SELECT * FROM projects p WHERE p.id = ?";
     private static final String FIND_ALL =
-            "SELECT p.id, p.name, p.description, companies.company_name, customers.customer_name, " +
-                    "p.date, companies.company_id, customers.customer_id " +
+            "SELECT p.id, p.name, p.description, companies.company_name, customers.customer_name, p.date, " +
+                    "companies.company_id, customers.customer_id\n" +
                     "FROM projects p\n" +
                     "INNER JOIN companies ON companies.company_id = p.company_id\n" +
-                    "INNER JOIN customers ON customers.customer_id = p.customer_id;";
+                    "INNER JOIN customers ON customers.customer_id = p.customer_id\n" +
+                    "ORDER BY p.id;;";
     private static final String UPDATE =
             "UPDATE projects p SET name = ?, description = ?, company_id = ?, customer_id = ?, date = ? WHERE p.id = ?";
     private static final String DELETE = "DELETE FROM projects WHERE id = ?";

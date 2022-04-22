@@ -24,7 +24,9 @@ public class CustomerRepository implements Repository<CustomersDao> {
     private static final String FIND_ALL = "SELECT * FROM customers;";
     private static final String UPDATE =
             "UPDATE customers c SET customer_name = ?, business = ? WHERE c.customer_id = ?;";
-    private static final String DELETE = "DELETE FROM customers WHERE customer_id = ?;";
+    private static final String DELETE =
+            "UPDATE projects SET customer_id = null WHERE customer_id = ?;\n" +
+                    "DELETE FROM customers WHERE customer_id = ?;";
 
     @Override
     public Integer create(CustomersDao customersDao) {
@@ -95,6 +97,7 @@ public class CustomerRepository implements Repository<CustomersDao> {
         try (Connection connection = connector.getConnection();
              PreparedStatement ps = connection.prepareStatement(DELETE)) {
             ps.setInt(1, id);
+            ps.setInt(2, id);
             ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
