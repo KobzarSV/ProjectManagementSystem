@@ -1,7 +1,12 @@
 package ua.goit.project.model.dao;
 
-import java.sql.Date;
+import jakarta.persistence.*;
 
+import java.sql.Date;
+import java.util.Set;
+
+@Entity
+@Table(name = "projects")
 public class ProjectsDao {
     private Integer id;
     private String name;
@@ -9,26 +14,25 @@ public class ProjectsDao {
     private Integer companyId;
     private Integer customerId;
     private Date date;
-    private Integer countDevelopers;
-    private String companyName;
-    private String customerName;
+    private Set<DevelopersDao> developers;
 
-    public ProjectsDao(Integer id, String name, String description, Integer companyId, Integer customerId,
-                       Date date, Integer countDevelopers, String companyName, String customerName) {
+    public ProjectsDao(Integer id, String name, String description, Integer companyId,
+                       Integer customerId, Date date, Set<DevelopersDao> developers) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.companyId = companyId;
         this.customerId = customerId;
         this.date = date;
-        this.countDevelopers = countDevelopers;
-        this.companyName = companyName;
-        this.customerName = customerName;
+        this.developers = developers;
     }
 
     public ProjectsDao() {
     }
 
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
@@ -37,6 +41,7 @@ public class ProjectsDao {
         this.id = id;
     }
 
+    @Column(name = "name")
     public String getName() {
         return name;
     }
@@ -45,6 +50,7 @@ public class ProjectsDao {
         this.name = name;
     }
 
+    @Column(name = "description")
     public String getDescription() {
         return description;
     }
@@ -53,6 +59,7 @@ public class ProjectsDao {
         this.description = description;
     }
 
+    @Column(name = "company_id")
     public Integer getCompanyId() {
         return companyId;
     }
@@ -61,6 +68,7 @@ public class ProjectsDao {
         this.companyId = companyId;
     }
 
+    @Column(name = "customer_id")
     public Integer getCustomerId() {
         return customerId;
     }
@@ -69,6 +77,7 @@ public class ProjectsDao {
         this.customerId = customerId;
     }
 
+    @Column(name = "date")
     public Date getDate() {
         return date;
     }
@@ -77,27 +86,17 @@ public class ProjectsDao {
         this.date = date;
     }
 
-    public Integer getCountDevelopers() {
-        return countDevelopers;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "developers_projects",
+            joinColumns = {@JoinColumn(name = "project_id")},
+            inverseJoinColumns = {@JoinColumn(name = "developer_id")}
+    )
+    public Set<DevelopersDao> getDevelopers() {
+        return developers;
     }
 
-    public void setCountDevelopers(Integer countDevelopers) {
-        this.countDevelopers = countDevelopers;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setDevelopers(Set<DevelopersDao> developers) {
+        this.developers = developers;
     }
 }

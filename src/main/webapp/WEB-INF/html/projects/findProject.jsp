@@ -24,6 +24,7 @@
                           <th style="text-align: center">Company</th>
                           <th style="text-align: center">Customer</th>
                           <th style="text-align: center">Date</th>
+                          <th style="text-align: center">Developers</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -47,6 +48,11 @@
                                   </td>
                                   <td>
                                       <c:out value="${project.date}"/>
+                                  </td>
+                                  <td>
+                                      <c:forEach items="${project.developers}" var="developers">
+                                          <a href="/findDeveloper?developerId=${developers.id}"> <c:out value="${developers.name}"/> </a>
+                                      </c:forEach>
                                   </td>
                               </tr>
                       </tbody>

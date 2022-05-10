@@ -1,31 +1,38 @@
 package ua.goit.project.model.dao;
 
+import jakarta.persistence.*;
+
+import java.util.Set;
+
+@Entity
+@Table(name = "skills")
 public class SkillsDao {
-    private Integer DevelopersId;
+    private Integer id;
     private String industry;
     private String skillLevel;
-    private Integer developerSkillsId;
-    private Integer skillsDeveloperId;
+    private Set<DevelopersDao> developers;
 
-    public SkillsDao(Integer id, String industry, String skillLevel, Integer developerSkillsId, Integer skillsDeveloperId) {
-        this.DevelopersId = id;
+    public SkillsDao(Integer id, String industry, String skillLevel, Set<DevelopersDao> developers) {
+        this.id = id;
         this.industry = industry;
         this.skillLevel = skillLevel;
-        this.developerSkillsId = developerSkillsId;
-        this.skillsDeveloperId = skillsDeveloperId;
+        this.developers = developers;
     }
 
     public SkillsDao() {
     }
 
-    public Integer getDevelopersId() {
-        return DevelopersId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Integer getId() {
+        return id;
     }
 
-    public void setDevelopersId(Integer developersId) {
-        this.DevelopersId = developersId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
+    @Column(name = "industry")
     public String getIndustry() {
         return industry;
     }
@@ -34,6 +41,7 @@ public class SkillsDao {
         this.industry = industry;
     }
 
+    @Column(name = "skill_level")
     public String getSkillLevel() {
         return skillLevel;
     }
@@ -42,19 +50,12 @@ public class SkillsDao {
         this.skillLevel = skillLevel;
     }
 
-    public Integer getDeveloperSkillsId() {
-        return developerSkillsId;
+    @ManyToMany(mappedBy = "skills")
+    public Set<DevelopersDao> getDevelopers() {
+        return developers;
     }
 
-    public void setDeveloperSkillsId(Integer developerSkillsId) {
-        this.developerSkillsId = developerSkillsId;
-    }
-
-    public Integer getSkillsDeveloperId() {
-        return skillsDeveloperId;
-    }
-
-    public void setSkillsDeveloperId(Integer skillsDeveloperId) {
-        this.skillsDeveloperId = skillsDeveloperId;
+    public void setDevelopers(Set<DevelopersDao> developers) {
+        this.developers = developers;
     }
 }

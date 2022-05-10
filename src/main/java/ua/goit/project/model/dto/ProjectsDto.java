@@ -1,6 +1,7 @@
 package ua.goit.project.model.dto;
 
 import java.sql.Date;
+import java.util.Set;
 
 public class ProjectsDto {
     private Integer id;
@@ -9,42 +10,17 @@ public class ProjectsDto {
     private Integer companyId;
     private Integer customerId;
     private Date date;
-    private Integer countDevelopers;
-    private String companyName;
-    private String customerName;
-
-    public ProjectsDto(Integer id, String name, String description, Integer companyId, Integer customerId,
-                       Date date, Integer countDevelopers, String companyName, String customerName) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.companyId = companyId;
-        this.customerId = customerId;
-        this.date = date;
-        this.countDevelopers = countDevelopers;
-        this.companyName = companyName;
-        this.customerName = customerName;
-    }
+    private Set<DevelopersDto> developers;
 
     public ProjectsDto(Integer id, String name, String description, Integer companyId,
-                       Integer customerId, Date date, Integer countDevelopers) {
+                       Integer customerId, Date date, Set<DevelopersDto> developers) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.companyId = companyId;
         this.customerId = customerId;
         this.date = date;
-        this.countDevelopers = countDevelopers;
-    }
-
-    public ProjectsDto(Integer id, String name, String description, Date date, Integer countDevelopers, String companyName, String customerName) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.date = date;
-        this.countDevelopers = countDevelopers;
-        this.companyName = companyName;
-        this.customerName = customerName;
+        this.developers = developers;
     }
 
     public ProjectsDto() {
@@ -98,55 +74,11 @@ public class ProjectsDto {
         this.date = date;
     }
 
-    public Integer getCountDevelopers() {
-        return countDevelopers;
+    public Set<DevelopersDto> getDevelopers() {
+        return developers;
     }
 
-    public void setCountDevelopers(Integer countDevelopers) {
-        this.countDevelopers = countDevelopers;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append('\n');
-        builder.append("Project {");
-        if (id != null) {
-            builder.append("id:").append(id).append(", ");
-        }
-        builder.append("name:'").append(name).append("', ");
-        if (description != null) {
-            builder.append("description:'").append(description).append("', ");
-        }
-        if (companyId != null) {
-            builder.append("company id:").append(companyId).append(", ");
-        }
-        if (customerId != null) {
-            builder.append("customer id:").append(customerId).append(", ");
-        }
-        if (date != null) {
-            builder.append("date:").append(date).append(", ");
-        }
-        if (countDevelopers != null) {
-            builder.append("count developers:").append(countDevelopers);
-        }
-        builder.append("}");
-        return builder.toString();
+    public void setDevelopers(Set<DevelopersDto> developers) {
+        this.developers = developers;
     }
 }

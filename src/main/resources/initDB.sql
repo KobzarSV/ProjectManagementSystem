@@ -1,5 +1,5 @@
 CREATE table developers (
-	id serial not null primary key,
+	id SERIAL PRIMARY KEY,
 	first_name varchar(50),
 	last_name varchar(50),
 	age int,
@@ -8,7 +8,7 @@ CREATE table developers (
 );
 
 CREATE table skills (
-	id serial not null primary key,
+	id SERIAL PRIMARY KEY,
 	industry varchar(50),
 	skill_level varchar(50)
 );
@@ -22,10 +22,10 @@ CREATE table developers_skills (
 );
 
 CREATE table companies (
-	id serial not null primary key,
+	id SERIAL PRIMARY KEY,
 	name varchar(100),
 	description varchar(500),
-	number_of_employees int
+	employees int
 );
 
 ALTER table developers
@@ -33,7 +33,7 @@ ALTER table developers
 	ADD foreign key (company_id) references companies (id);
 
 CREATE table customers (
-	id serial not null primary key,
+	id SERIAL PRIMARY KEY,
 	name varchar(50),
 	business varchar(250)
 );
@@ -64,12 +64,9 @@ ALTER TABLE developers
 	ADD salary int;
 
 ALTER TABLE projects
-	ADD cost int;
-
-ALTER TABLE projects
 	ADD date DATE;
 
-INSERT INTO companies (name, description, number_of_employees)
+INSERT INTO companies (name, description, employees)
 	 VALUES ('EPAM', 'С 1993 года EPAM помогает мировым лидерам проектировать,
 			разрабатывать и внедрять изменяющее мир мировое программное обеспечение.', 11600),
 			('SoftServe', 'SoftServe — ведущая ИТ-компания,
@@ -79,19 +76,19 @@ INSERT INTO companies (name, description, number_of_employees)
 			('Luxoft', 'Luxoft — подразделение DXC Technology по проектированию,
 			 обработке данных и разработке.', 3581);
 
-INSERT INTO skills (id, industry, skill_level)
-	 VALUES (11, 'Java', 'Junior'),
-			(12, 'Java', 'Middle'),
-			(13, 'Java', 'Senior'),
-			(21, 'C++', 'Junior'),
-			(22, 'C++', 'Middle'),
-			(23, 'C++', 'Senior'),
-			(31, 'C#', 'Junior'),
-			(32, 'C#', 'Middle'),
-			(33, 'C#', 'Senior'),
-			(41, 'JS', 'Junior'),
-			(42, 'JS', 'Middle'),
-			(43, 'JS', 'Senior');
+INSERT INTO skills (industry, skill_level)
+	 VALUES ('Java', 'Junior'),
+			('Java', 'Middle'),
+			('Java', 'Senior'),
+			('C++', 'Junior'),
+			('C++', 'Middle'),
+			('C++', 'Senior'),
+			('C#', 'Junior'),
+			('C#', 'Middle'),
+			('C#', 'Senior'),
+			('JS', 'Junior'),
+			('JS', 'Middle'),
+			('JS', 'Senior');
 
 INSERT INTO customers (name, business)
 	 VALUES ('Ilon Mask', 'Tesla, SpaceX'),
@@ -108,7 +105,7 @@ INSERT INTO developers (first_name, last_name, age, gender, mail, company_id)
 			('Olga', 'Orlova', 32, 'female', 'orlova@mail.com', 4);
 
 INSERT INTO developers_skills
-	 VALUES (1, 13), (1, 33), (1, 42), (2, 13), (2, 22), (3, 11), (4, 43), (5, 12), (5, 33), (6, 11), (7, 12);
+	 VALUES (1, 3), (1, 9), (1, 11), (2, 3), (2, 5), (3, 1), (4, 12), (5, 2), (5, 9), (6, 1), (7, 2);
 
 INSERT INTO projects (name, description, company_id, customer_id)
 	 VALUES ('Search mobile app', 'Mobile application for product search', 1, 2),
@@ -135,19 +132,6 @@ UPDATE developers SET salary = 1500
 	WHERE id IN (6);
 UPDATE developers SET salary = 3000
 	WHERE id IN (7);
-
-UPDATE projects SET cost = 7300
-	WHERE name IN ('Search mobile app');
-UPDATE projects SET cost = 7000
-	WHERE name IN ('Favorite books');
-UPDATE projects SET cost = 7000
-	WHERE name IN ('Mobile Windows app');
-UPDATE projects SET cost = 6700
-	WHERE name IN ('Delivery app');
-UPDATE projects SET cost = 6700
-	WHERE name IN ('Car control panel');
-UPDATE projects SET cost = 4500
-	WHERE name IN ('Autopilot');
 
 UPDATE projects SET date = '2021-07-10' WHERE id = 1;
 UPDATE projects SET date = '2018-01-11' WHERE id = 2;

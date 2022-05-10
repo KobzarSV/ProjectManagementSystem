@@ -3,7 +3,15 @@ package ua.goit.project.model.converter;
 import ua.goit.project.model.dao.DevelopersDao;
 import ua.goit.project.model.dto.DevelopersDto;
 
+import java.util.stream.Collectors;
+
 public class DevelopersConverter implements Convertor<DevelopersDao, DevelopersDto> {
+
+    SkillsConverter skillsConverter;
+
+    public DevelopersConverter(SkillsConverter skillsConverter) {
+        this.skillsConverter = skillsConverter;
+    }
 
     @Override
     public DevelopersDto toDto(DevelopersDao dao) {
@@ -15,9 +23,9 @@ public class DevelopersConverter implements Convertor<DevelopersDao, DevelopersD
         dto.setMail(dao.getMail());
         dto.setCompanyId(dao.getCompanyId());
         dto.setSalary(dao.getSalary());
-        dto.setIndustry(dao.getIndustry());
-        dto.setSkillLevel(dao.getSkillLevel());
-        dto.setCompanyName(dao.getCompanyName());
+        dto.setSkills(dao.getSkills().stream()
+                .map(skillsConverter::toDto)
+                .collect(Collectors.toSet()));
         return dto;
     }
 
@@ -32,9 +40,9 @@ public class DevelopersConverter implements Convertor<DevelopersDao, DevelopersD
         dao.setMail(dto.getMail());
         dao.setCompanyId(dto.getCompanyId());
         dao.setSalary(dto.getSalary());
-        dao.setIndustry(dto.getIndustry());
-        dao.setSkillLevel(dto.getSkillLevel());
-        dao.setCompanyName(dto.getCompanyName());
+        dao.setSkills(dto.getSkills().stream()
+                .map(skillsConverter::toDao)
+                .collect(Collectors.toSet()));
         return dao;
     }
 }

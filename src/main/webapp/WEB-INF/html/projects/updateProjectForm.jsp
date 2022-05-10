@@ -46,6 +46,14 @@
                  <label for="projectDate">Date</label><br>
                  <input type="text" class="form-control" id="projectDate" placeholder="Enter customer date. Example 2022-02-02" name="projectDate"><br>
 
+                 <label for="developerId">Select developer:</label><br>
+                    <c:forEach items="${developers}" var="developer">
+                       <input type="checkbox" name="developerId" value="${developer.id}"> <c:out value="${developer.name}"/>
+                           <c:forEach items="${developer.skills}" var="skills">
+                               <c:out value="${skills.industry}"/> <c:out value="${skills.skillLevel}"/> </a>
+                            </c:forEach>
+                       <br>
+                    </c:forEach>
                </div>
                  <input type="submit" value="Update">
             </form>

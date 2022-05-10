@@ -37,14 +37,4 @@ public class CustomersDto {
     public void setBusiness(String business) {
         this.business = business;
     }
-
-    @Override
-    public String toString() {
-        return "\n" +
-                "Customer {" +
-                "id:" + id +
-                ", name:'" + name + '\'' +
-                ", business:'" + business + '\'' +
-                '}';
-    }
 }

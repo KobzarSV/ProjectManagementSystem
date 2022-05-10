@@ -29,6 +29,7 @@
                           <th style="text-align: center">Mail</th>
                           <th style="text-align: center">Company</th>
                           <th style="text-align: center">Salary</th>
+                          <th style="text-align: center">Skills</th>
                       </tr>
                       </thead>
 
@@ -52,32 +53,18 @@
                                   </td>
                                   <td>
                                       <a href="/findCompany?companyId=${developer.companyId}">
-                                      <c:out value="${developer.companyName}"/>
+                                      <c:out value="${developer.companyId}"/>
                                   </td>
                                   <td>
                                       <c:out value="${developer.salary}"/>
                                   </td>
+                                  <td>
+                                      <c:forEach items="${developer.skills}" var="skills">
+                                           <c:out value="${skills.industry}"/> <c:out value="${skills.skillLevel}"/> </a>
+                                      </c:forEach>
+                                  </td>
                               </tr>
                         </c:forEach>
-                      </tbody>
-                  </table>
-               </td>
-
-               <td>
-                  <table class="table table-striped", style="text-align: center">
-                         <thead>
-                            <tr>
-                                <th style="text-align: center">Skills and level</th>
-                            </tr>
-                         </thead>
-                      <tbody>
-                         <c:forEach items="${industry}" var="industry">
-                           <tr>
-                             <td>
-                                <c:out value="${industry}"/>
-                              </td>
-                           </tr>
-                         </c:forEach>
                       </tbody>
                   </table>
                </td>

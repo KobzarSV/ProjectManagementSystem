@@ -1,25 +1,29 @@
 package ua.goit.project.model.dto;
 
+import java.util.Set;
+
 public class SkillsDto {
-    private Integer developersId;
+    private Integer id;
     private String industry;
     private String skillLevel;
+    private Set<DevelopersDto> developers;
 
-    public SkillsDto(Integer id, String industry, String skillLevel) {
-        this.developersId = id;
+    public SkillsDto(Integer id, String industry, String skillLevel, Set<DevelopersDto> developers) {
+        this.id = id;
         this.industry = industry;
         this.skillLevel = skillLevel;
+        this.developers = developers;
     }
 
     public SkillsDto() {
     }
 
-    public Integer getDevelopersId() {
-        return developersId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setDevelopersId(Integer developersId) {
-        this.developersId = developersId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getIndustry() {
@@ -36,5 +40,13 @@ public class SkillsDto {
 
     public void setSkillLevel(String skillLevel) {
         this.skillLevel = skillLevel;
+    }
+
+    public Set<DevelopersDto> getDevelopers() {
+        return developers;
+    }
+
+    public void setDevelopers(Set<DevelopersDto> developers) {
+        this.developers = developers;
     }
 }

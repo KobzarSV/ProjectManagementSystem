@@ -1,27 +1,35 @@
 package ua.goit.project.model.converter;
 
-import ua.goit.project.model.dao.CompanyDao;
-import ua.goit.project.model.dto.CompanyDto;
+import ua.goit.project.model.dao.CompaniesDao;
+import ua.goit.project.model.dto.CompaniesDto;
 
-public class CompanyConverter implements Convertor<CompanyDao, CompanyDto> {
+public class CompanyConverter implements Convertor<CompaniesDao, CompaniesDto> {
+
+    DevelopersConverter developersConverter;
+    ProjectsConverter projectsConverter;
+
+    public CompanyConverter(DevelopersConverter developersConverter, ProjectsConverter projectsConverter) {
+        this.developersConverter = developersConverter;
+        this.projectsConverter = projectsConverter;
+    }
 
     @Override
-    public CompanyDto toDto(CompanyDao dao) {
-        CompanyDto dto = new CompanyDto();
+    public CompaniesDto toDto(CompaniesDao dao) {
+        CompaniesDto dto = new CompaniesDto();
         dto.setId(dao.getId());
         dto.setName(dao.getName());
         dto.setDescription(dao.getDescription());
-        dto.setNumberOfEmployees(dao.getNumberOfEmployees());
+        dto.setEmployees(dao.getEmployees());
         return dto;
     }
 
     @Override
-    public CompanyDao toDao(CompanyDto dto) {
-        CompanyDao dao = new CompanyDao();
+    public CompaniesDao toDao(CompaniesDto dto) {
+        CompaniesDao dao = new CompaniesDao();
         dao.setId(dto.getId());
         dao.setName(dto.getName());
         dao.setDescription(dto.getDescription());
-        dao.setNumberOfEmployees(dto.getNumberOfEmployees());
+        dao.setEmployees(dto.getEmployees());
         return dao;
     }
 }

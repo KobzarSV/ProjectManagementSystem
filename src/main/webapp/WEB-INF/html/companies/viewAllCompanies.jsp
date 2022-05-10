@@ -39,7 +39,7 @@
                                       <c:out value="${company.description}"/>
                                   </td>
                                   <td>
-                                      <c:out value="${company.numberOfEmployees}"/>
+                                      <c:out value="${company.employees}"/>
                                   </td>
 
                               </tr>

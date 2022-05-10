@@ -1,8 +1,7 @@
 package ua.goit.project.controller.customersController;
 
 import ua.goit.project.config.DatabaseManager;
-import ua.goit.project.config.PostgresProvider;
-import ua.goit.project.config.PropertiesUtil;
+import ua.goit.project.config.HibernateProvider;
 import ua.goit.project.dataLayer.CustomerRepository;
 import ua.goit.project.model.converter.CustomersConverter;
 import ua.goit.project.model.dto.CustomersDto;
@@ -23,10 +22,8 @@ public class ViewAllCustomersServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        PropertiesUtil properties = new PropertiesUtil(getServletContext());
-        DatabaseManager dbConnector = new PostgresProvider(properties.getHostname(), properties.getPort(), properties.getSchema(),
-                properties.getUser(), properties.getPassword(), properties.getJdbcDriver());
-        service = new CustomersService(new CustomersConverter(), new CustomerRepository(dbConnector));
+        DatabaseManager dbConnector = new HibernateProvider();
+        service = new CustomersService(new CustomerRepository(dbConnector), new CustomersConverter());
     }
 
     @Override

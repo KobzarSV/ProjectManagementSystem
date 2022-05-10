@@ -18,6 +18,7 @@
         <div class="container">
             <form action="/createDeveloper" method="post">
               <div class="form-group">
+
                  <label for="developerName">Name</label><br>
                  <input type="text" class="form-control" id="developerName" placeholder="Enter developer first name and last name" name="developerName"><br>
 
@@ -41,7 +42,13 @@
                     </select>
 
                  <label for="developerSalary">Salary</label><br>
-                 <input type="number" class="form-control" id="developerSalary" placeholder="Enter developer salary" name="developerSalary"><br>
+                  <input type="number" class="form-control" id="developerSalary" placeholder="Enter developer salary" name="developerSalary"><br>
+
+                 <label for="skillId">Select skills:</label><br>
+                     <c:forEach items="${skills}" var="skill">
+                         <input type="checkbox" name="skillId" value="${skill.id}"> <c:out value="${skill.industry}"/> <c:out value="${skill.skillLevel}"/> <br>
+                     </c:forEach>
+
                </div>
                  <input type="submit" value="Create">
             </form>

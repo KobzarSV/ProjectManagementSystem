@@ -1,11 +1,13 @@
 package ua.goit.project.controller.companiesController;
 
 import ua.goit.project.config.DatabaseManager;
-import ua.goit.project.config.PostgresProvider;
-import ua.goit.project.config.PropertiesUtil;
+import ua.goit.project.config.HibernateProvider;
 import ua.goit.project.dataLayer.CompanyRepository;
 import ua.goit.project.model.converter.CompanyConverter;
-import ua.goit.project.model.dto.CompanyDto;
+import ua.goit.project.model.converter.DevelopersConverter;
+import ua.goit.project.model.converter.ProjectsConverter;
+import ua.goit.project.model.converter.SkillsConverter;
+import ua.goit.project.model.dto.CompaniesDto;
 import ua.goit.project.service.CompanyService;
 
 import javax.servlet.ServletException;
@@ -23,15 +25,17 @@ public class ViewAllCompanies extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        PropertiesUtil properties = new PropertiesUtil(getServletContext());
-        DatabaseManager dbConnector = new PostgresProvider(properties.getHostname(), properties.getPort(), properties.getSchema(),
-                properties.getUser(), properties.getPassword(), properties.getJdbcDriver());
-        companyService = new CompanyService(new CompanyConverter(), new CompanyRepository(dbConnector));
+        DatabaseManager dbConnector = new HibernateProvider();
+        DevelopersConverter developersConverter = new DevelopersConverter(new SkillsConverter());
+        ProjectsConverter projectsConverter = new ProjectsConverter(developersConverter);
+        CompanyConverter companyConverter = new CompanyConverter(developersConverter, projectsConverter);
+        companyService = new CompanyService(new CompanyRepository(dbConnector),
+                companyConverter, developersConverter, projectsConverter);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<CompanyDto> companyDtoList = companyService.find();
+        List<CompaniesDto> companyDtoList = companyService.find();
         req.setAttribute("companies", companyDtoList);
         req.getRequestDispatcher("/WEB-INF/html/companies/viewAllCompanies.jsp").forward(req, resp);
     }

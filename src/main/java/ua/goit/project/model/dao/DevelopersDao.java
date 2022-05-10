@@ -1,5 +1,11 @@
 package ua.goit.project.model.dao;
 
+import jakarta.persistence.*;
+
+import java.util.Set;
+
+@Entity
+@Table(name = "developers")
 public class DevelopersDao {
     private Integer id;
     private String firstName;
@@ -9,12 +15,12 @@ public class DevelopersDao {
     private String mail;
     private Integer companyId;
     private Integer salary;
-    private String industry;
-    private String skillLevel;
-    private String companyName;
+    private Set<SkillsDao> skills;
+    private Set<ProjectsDao> projects;
 
-    public DevelopersDao(Integer id, String firstName, String lastName, Integer age, String gender, String mail,
-                         Integer companyId, Integer salary, String industry, String skillLevel, String companyName) {
+    public DevelopersDao(Integer id, String firstName, String lastName, Integer age,
+                         String gender, String mail, Integer companyId, Integer salary,
+                         Set<SkillsDao> skills, Set<ProjectsDao> projects) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -23,14 +29,16 @@ public class DevelopersDao {
         this.mail = mail;
         this.companyId = companyId;
         this.salary = salary;
-        this.industry = industry;
-        this.skillLevel = skillLevel;
-        this.companyName = companyName;
+        this.skills = skills;
+        this.projects = projects;
     }
 
     public DevelopersDao() {
     }
 
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
@@ -39,6 +47,7 @@ public class DevelopersDao {
         this.id = id;
     }
 
+    @Column(name = "first_name")
     public String getFirstName() {
         return firstName;
     }
@@ -47,6 +56,7 @@ public class DevelopersDao {
         this.firstName = firstName;
     }
 
+    @Column(name = "last_name")
     public String getLastName() {
         return lastName;
     }
@@ -55,6 +65,7 @@ public class DevelopersDao {
         this.lastName = lastName;
     }
 
+    @Column(name = "age")
     public Integer getAge() {
         return age;
     }
@@ -63,6 +74,7 @@ public class DevelopersDao {
         this.age = age;
     }
 
+    @Column(name = "gender")
     public String getGender() {
         return gender;
     }
@@ -71,6 +83,7 @@ public class DevelopersDao {
         this.gender = gender;
     }
 
+    @Column(name = "mail")
     public String getMail() {
         return mail;
     }
@@ -79,6 +92,9 @@ public class DevelopersDao {
         this.mail = mail;
     }
 
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+//    @JoinColumn(name="company_id")
+    @Column(name = "company_id")
     public Integer getCompanyId() {
         return companyId;
     }
@@ -87,6 +103,7 @@ public class DevelopersDao {
         this.companyId = companyId;
     }
 
+    @Column(name = "salary")
     public Integer getSalary() {
         return salary;
     }
@@ -95,27 +112,26 @@ public class DevelopersDao {
         this.salary = salary;
     }
 
-    public String getIndustry() {
-        return industry;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "developers_skills",
+            joinColumns = {@JoinColumn(name = "developer_id")},
+            inverseJoinColumns = {@JoinColumn(name = "skill_id")}
+    )
+    public Set<SkillsDao> getSkills() {
+        return skills;
     }
 
-    public void setIndustry(String industry) {
-        this.industry = industry;
+    public void setSkills(Set<SkillsDao> skills) {
+        this.skills = skills;
     }
 
-    public String getSkillLevel() {
-        return skillLevel;
+    @ManyToMany(mappedBy = "developers")
+    public Set<ProjectsDao> getProjects() {
+        return projects;
     }
 
-    public void setSkillLevel(String skillLevel) {
-        this.skillLevel = skillLevel;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setProjects(Set<ProjectsDao> projects) {
+        this.projects = projects;
     }
 }

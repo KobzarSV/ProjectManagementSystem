@@ -53,7 +53,9 @@
                                       <c:out value="${developer.salary}"/>
                                   </td>
                                   <td>
-                                      <c:out value="${industry}"/>
+                                  <c:forEach items="${developer.skills}" var="skills">
+                                  <c:out value="${skills.industry}"/> <c:out value="${skills.skillLevel}"/> </a>
+                                  </c:forEach>
                                   </td>
                               </tr>
                       </tbody>

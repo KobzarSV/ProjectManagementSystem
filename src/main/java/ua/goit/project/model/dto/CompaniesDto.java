@@ -1,19 +1,19 @@
-package ua.goit.project.model.dao;
+package ua.goit.project.model.dto;
 
-public class CompanyDao {
+public class CompaniesDto {
     private Integer id;
     private String name;
     private String description;
-    private Integer numberOfEmployees;
+    private Integer employees;
 
-    public CompanyDao(Integer id, String name, String description, Integer number_of_employees) {
+    public CompaniesDto(Integer id, String name, String description, Integer employees) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.numberOfEmployees = number_of_employees;
+        this.employees = employees;
     }
 
-    public CompanyDao() {
+    public CompaniesDto() {
     }
 
     public Integer getId() {
@@ -40,11 +40,11 @@ public class CompanyDao {
         this.description = description;
     }
 
-    public Integer getNumberOfEmployees() {
-        return numberOfEmployees;
+    public Integer getEmployees() {
+        return employees;
     }
 
-    public void setNumberOfEmployees(Integer numberOfEmployees) {
-        this.numberOfEmployees = numberOfEmployees;
+    public void setEmployees(Integer employees) {
+        this.employees = employees;
     }
 }

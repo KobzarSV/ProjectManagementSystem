@@ -10,10 +10,13 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.postgresql:postgresql:42.3.3'
-    implementation 'com.zaxxer:HikariCP:5.0.1'
-    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
-    implementation group: 'javax.servlet', name: 'jstl', version: '1.2'
+    implementation 'org.postgresql:postgresql:42.3.4'
+    implementation 'com.zaxxer:HikariCP:4.0.3'
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+    implementation'jstl:jstl:1.2'
+    implementation 'org.hibernate:hibernate-core:6.0.0.Final'
+    implementation 'jakarta.ws.rs:jakarta.ws.rs-api:3.0.0'
+    implementation group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }

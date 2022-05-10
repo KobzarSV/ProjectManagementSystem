@@ -1,11 +1,13 @@
 package ua.goit.project.controller.companiesController;
 
 import ua.goit.project.config.DatabaseManager;
-import ua.goit.project.config.PostgresProvider;
-import ua.goit.project.config.PropertiesUtil;
+import ua.goit.project.config.HibernateProvider;
 import ua.goit.project.dataLayer.CompanyRepository;
 import ua.goit.project.model.converter.CompanyConverter;
-import ua.goit.project.model.dto.CompanyDto;
+import ua.goit.project.model.converter.DevelopersConverter;
+import ua.goit.project.model.converter.ProjectsConverter;
+import ua.goit.project.model.converter.SkillsConverter;
+import ua.goit.project.model.dto.CompaniesDto;
 import ua.goit.project.service.CompanyService;
 
 import javax.servlet.ServletException;
@@ -23,10 +25,12 @@ public class CreateCompanyServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        PropertiesUtil properties = new PropertiesUtil(getServletContext());
-        DatabaseManager dbConnector = new PostgresProvider(properties.getHostname(), properties.getPort(), properties.getSchema(),
-                properties.getUser(), properties.getPassword(), properties.getJdbcDriver());
-        companyService = new CompanyService(new CompanyConverter(), new CompanyRepository(dbConnector));
+        DatabaseManager dbConnector = new HibernateProvider();
+        DevelopersConverter developersConverter = new DevelopersConverter(new SkillsConverter());
+        ProjectsConverter projectsConverter = new ProjectsConverter(developersConverter);
+        CompanyConverter companyConverter = new CompanyConverter(developersConverter, projectsConverter);
+        companyService = new CompanyService(new CompanyRepository(dbConnector),
+                companyConverter, developersConverter, projectsConverter);
     }
 
     @Override
@@ -37,11 +41,10 @@ public class CreateCompanyServlet extends HttpServlet {
         if (Objects.equals(numberOfEmployees, "")) {
             numberOfEmployees = "0";
         }
-        CompanyDto companyDto = new CompanyDto();
-        companyDto.setId(0);
+        CompaniesDto companyDto = new CompaniesDto();
         companyDto.setName(companyName);
         companyDto.setDescription(companyDescription);
-        companyDto.setNumberOfEmployees(Integer.parseInt(numberOfEmployees));
+        companyDto.setEmployees(Integer.parseInt(numberOfEmployees));
         companyService.create(companyDto);
         req.getRequestDispatcher("/WEB-INF/html/companies/createdCompany.jsp").forward(req, resp);
     }

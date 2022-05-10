@@ -45,8 +45,13 @@
                           </c:forEach>
                        </select>
 
-                       <label for="developerSalary">Salary</label><br>
+                    <label for="developerSalary">Salary</label><br>
                        <input type="number" class="form-control" id="developerSalary" placeholder="Enter developer salary" name="developerSalary"><br>
+
+                    <label for="skillId">Select skills:</label><br>
+                       <c:forEach items="${skills}" var="skill">
+                           <input type="checkbox" name="skillId" value="${skill.id}"> <c:out value="${skill.industry}"/> <c:out value="${skill.skillLevel}"/> <br>
+                       </c:forEach>
                </div>
                  <input type="submit" value="Update">
             </form>

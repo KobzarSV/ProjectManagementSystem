@@ -1,17 +1,18 @@
 package ua.goit.project.dataLayer;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.transform.Transformers;
 import ua.goit.project.config.DatabaseManager;
-import ua.goit.project.model.dao.CompanyDao;
+import ua.goit.project.model.dao.CompaniesDao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CompanyRepository implements Repository<CompanyDao> {
+public class CompanyRepository implements Repository<CompaniesDao> {
+
+    private static final String FIND_BY_ID = "FROM CompaniesDao compd WHERE compd.id=:id";
+    private static final String FIND_ALL = "FROM CompaniesDao";
 
     private final DatabaseManager connector;
 
@@ -19,119 +20,101 @@ public class CompanyRepository implements Repository<CompanyDao> {
         this.connector = connector;
     }
 
-    private static final String CREATE =
-            "INSERT INTO companies (company_name, description, number_of_employees) VALUES (?, ?, ?);";
-    private static final String FIND_BY_ID = "SELECT * FROM companies c WHERE c.company_id = ?;";
-    private static final String FIND_ALL = "SELECT * FROM companies;";
-    private static final String UPDATE =
-            "UPDATE companies c SET company_name = ?, description = ?, number_of_employees = ? WHERE c.company_id = ?;";
-    private static final String DELETE =
-            "DELETE FROM projects WHERE company_id = ?;\n" +
-                    "UPDATE developers SET company_id = null WHERE company_id = ?;\n" +
-                    "DELETE FROM companies WHERE company_id = ?;";
-
     @Override
-    public Integer create(CompanyDao companyDao) {
-        try (Connection connection = connector.getConnection();
-             PreparedStatement ps = connection.prepareStatement(CREATE)) {
-            ps.setString(1, companyDao.getName());
-            ps.setString(2, companyDao.getDescription());
-            ps.setInt(3, companyDao.getNumberOfEmployees());
-            ps.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public Integer create(CompaniesDao companiesDao) {
+        Transaction transaction = null;
+        try (Session session = connector.getSession()) {
+            transaction = session.beginTransaction();
+            session.persist(companiesDao);
+            transaction.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return null;
     }
 
     @Override
-    public Optional<CompanyDao> findById(int id) {
-        try (Connection connection = connector.getConnection();
-             PreparedStatement ps = connection.prepareStatement(FIND_BY_ID)) {
-            ps.setInt(1, id);
-            ResultSet resultSet = ps.executeQuery();
-            return mapToCompaniesDao(resultSet);
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public Optional<CompaniesDao> findById(int id) {
+        try (Session session = connector.getSession()) {
+            Optional<CompaniesDao> company = session.createQuery(FIND_BY_ID)
+                    .setParameter("id", id)
+                    .setResultListTransformer(Transformers.aliasToBean(CompaniesDao.class))
+                    .uniqueResultOptional();
+            return company;
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return Optional.empty();
     }
 
     @Override
-    public List<CompanyDao> findAll() {
-        try (Connection connection = connector.getConnection();
-             PreparedStatement ps = connection.prepareStatement(FIND_ALL)) {
-            ResultSet resultSet = ps.executeQuery();
-            return mapToCompaniesListDao(resultSet);
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public List<CompaniesDao> findAll() {
+        try (Session session = connector.getSession()) {
+            List<CompaniesDao> companies = session.createQuery(FIND_ALL).list();
+            return companies;
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return List.of();
     }
 
     @Override
-    public int update(CompanyDao companyDao) {
-        int columnsUpdated = 0;
-        try (Connection connection = connector.getConnection();
-             PreparedStatement ps = connection.prepareStatement(UPDATE)) {
-            ps.setString(1, companyDao.getName());
-            ps.setString(2, companyDao.getDescription());
-            ps.setInt(3, companyDao.getNumberOfEmployees());
-            ps.setInt(4, companyDao.getId());
-            columnsUpdated = ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return columnsUpdated;
-    }
-
-    @Override
-    public void delete(CompanyDao companyDao) {
-        try (Connection connection = connector.getConnection();
-             PreparedStatement ps = connection.prepareStatement(DELETE)) {
-            ps.setInt(1, companyDao.getId());
-            ps.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public void update(CompaniesDao companyDao) {
+        Transaction transaction = null;
+        try (Session session = connector.getSession()) {
+            transaction = session.beginTransaction();
+            session.merge(companyDao);
+            transaction.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 
     @Override
-    public void delete(int id) {
-        try (Connection connection = connector.getConnection();
-             PreparedStatement ps = connection.prepareStatement(DELETE)) {
-            ps.setInt(1, id);
-            ps.setInt(2, id);
-            ps.setInt(3, id);
-            ps.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public void delete(CompaniesDao companyDao) {
+        deleteDeveloperForCompanyDao(companyDao);
+        deleteProjectForCompanyDao(companyDao);
+        Transaction transaction = null;
+        try (Session session = connector.getSession()) {
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM CompaniesDao cd WHERE cd.id=:id")
+                    .setParameter("id", companyDao.getId())
+                    .executeUpdate();
+            transaction.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 
-    private Optional<CompanyDao> mapToCompaniesDao(ResultSet resultSet) throws SQLException {
-        CompanyDao companyDao = null;
-        while (resultSet.next()) {
-            companyDao = new CompanyDao();
-            companyDao.setId(resultSet.getInt("company_id"));
-            companyDao.setName(resultSet.getString("company_name"));
-            companyDao.setDescription(resultSet.getString("description"));
-            companyDao.setNumberOfEmployees(resultSet.getInt("number_of_employees"));
+    public void deleteDeveloperForCompanyDao(CompaniesDao companyDao) {
+        Transaction transaction = null;
+        try (Session session = connector.getSession()) {
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM DevelopersDao dd WHERE dd.companyId=:id")
+                    .setParameter("id", companyDao.getId())
+                    .executeUpdate();
+            transaction.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        return Optional.ofNullable(companyDao);
     }
 
-    private List<CompanyDao> mapToCompaniesListDao(ResultSet resultSet) throws SQLException {
-        List<CompanyDao> companies = new ArrayList<>();
-        while (resultSet.next()) {
-            CompanyDao companyDao = null;
-            companyDao = new CompanyDao();
-            companyDao.setId(resultSet.getInt("company_id"));
-            companyDao.setName(resultSet.getString("company_name"));
-            companyDao.setDescription(resultSet.getString("description"));
-            companyDao.setNumberOfEmployees(resultSet.getInt("number_of_employees"));
-            companies.add(companyDao);
+    public void deleteProjectForCompanyDao(CompaniesDao companyDao) {
+        Transaction transaction = null;
+        try (Session session = connector.getSession()) {
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM ProjectsDao pd WHERE pd.companyId=:id")
+                    .setParameter("id", companyDao.getId())
+                    .executeUpdate();
+            transaction.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        return companies;
     }
 }

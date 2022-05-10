@@ -1,5 +1,9 @@
 package ua.goit.project.model.dao;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "customers")
 public class CustomersDao {
     private Integer id;
     private String name;
@@ -14,6 +18,9 @@ public class CustomersDao {
     public CustomersDao() {
     }
 
+    @Id
+    @Column(name = "customer_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
@@ -22,6 +29,7 @@ public class CustomersDao {
         this.id = id;
     }
 
+    @Column(name = "customer_name")
     public String getName() {
         return name;
     }
@@ -30,6 +38,7 @@ public class CustomersDao {
         this.name = name;
     }
 
+    @Column(name = "business")
     public String getBusiness() {
         return business;
     }

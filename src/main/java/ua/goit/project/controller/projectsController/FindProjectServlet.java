@@ -1,10 +1,11 @@
 package ua.goit.project.controller.projectsController;
 
 import ua.goit.project.config.DatabaseManager;
-import ua.goit.project.config.PostgresProvider;
-import ua.goit.project.config.PropertiesUtil;
+import ua.goit.project.config.HibernateProvider;
 import ua.goit.project.dataLayer.ProjectsRepository;
+import ua.goit.project.model.converter.DevelopersConverter;
 import ua.goit.project.model.converter.ProjectsConverter;
+import ua.goit.project.model.converter.SkillsConverter;
 import ua.goit.project.model.dto.ProjectsDto;
 import ua.goit.project.service.ProjectsService;
 
@@ -21,10 +22,10 @@ public class FindProjectServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        PropertiesUtil properties = new PropertiesUtil(getServletContext());
-        DatabaseManager dbConnector = new PostgresProvider(properties.getHostname(), properties.getPort(), properties.getSchema(),
-                properties.getUser(), properties.getPassword(), properties.getJdbcDriver());
-        projectsService = new ProjectsService(new ProjectsConverter(), new ProjectsRepository(dbConnector));
+        DatabaseManager dbConnector = new HibernateProvider();
+        DevelopersConverter developersConverter = new DevelopersConverter(new SkillsConverter());
+        projectsService = new ProjectsService(new ProjectsRepository(dbConnector),
+                new ProjectsConverter(developersConverter), developersConverter);
     }
 
     @Override

@@ -1,16 +1,17 @@
 package ua.goit.project.controller.projectsController;
 
 import ua.goit.project.config.DatabaseManager;
-import ua.goit.project.config.PostgresProvider;
-import ua.goit.project.config.PropertiesUtil;
+import ua.goit.project.config.HibernateProvider;
 import ua.goit.project.dataLayer.CompanyRepository;
 import ua.goit.project.dataLayer.CustomerRepository;
-import ua.goit.project.model.converter.CompanyConverter;
-import ua.goit.project.model.converter.CustomersConverter;
-import ua.goit.project.model.dto.CompanyDto;
+import ua.goit.project.dataLayer.DevelopersRepository;
+import ua.goit.project.model.converter.*;
+import ua.goit.project.model.dto.CompaniesDto;
 import ua.goit.project.model.dto.CustomersDto;
+import ua.goit.project.model.dto.DevelopersDto;
 import ua.goit.project.service.CompanyService;
 import ua.goit.project.service.CustomersService;
+import ua.goit.project.service.DevelopersService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,22 +26,28 @@ public class CreateProjectFormServlet extends HttpServlet {
 
     private CompanyService companyService;
     private CustomersService customersService;
+    private DevelopersService developersService;
 
     @Override
     public void init() throws ServletException {
-        PropertiesUtil properties = new PropertiesUtil(getServletContext());
-        DatabaseManager dbConnector = new PostgresProvider(properties.getHostname(), properties.getPort(), properties.getSchema(),
-                properties.getUser(), properties.getPassword(), properties.getJdbcDriver());
-        companyService = new CompanyService(new CompanyConverter(), new CompanyRepository(dbConnector));
-        customersService = new CustomersService(new CustomersConverter(), new CustomerRepository(dbConnector));
+        DatabaseManager dbConnector = new HibernateProvider();
+        DevelopersConverter developersConverter = new DevelopersConverter(new SkillsConverter());
+        ProjectsConverter projectsConverter = new ProjectsConverter(developersConverter);
+        CompanyConverter companyConverter = new CompanyConverter(developersConverter, projectsConverter);
+        companyService = new CompanyService(new CompanyRepository(dbConnector),
+                companyConverter, developersConverter, projectsConverter);
+        customersService = new CustomersService(new CustomerRepository(dbConnector), new CustomersConverter());
+        developersService = new DevelopersService(new DevelopersRepository(dbConnector), developersConverter);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<CompanyDto> companies = companyService.find();
+        List<CompaniesDto> companies = companyService.find();
         List<CustomersDto> customers = customersService.find();
+        List<DevelopersDto> developers = developersService.find();
         req.setAttribute("companies", companies);
         req.setAttribute("customers", customers);
+        req.setAttribute("developers", developers);
         req.getRequestDispatcher("/WEB-INF/html/projects/createProjectForm.jsp").forward(req, resp);
     }
 }
