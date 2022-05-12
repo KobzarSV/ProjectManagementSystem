@@ -5,8 +5,8 @@ import ua.goit.project.model.dto.CompaniesDto;
 
 public class CompanyConverter implements Convertor<CompaniesDao, CompaniesDto> {
 
-    DevelopersConverter developersConverter;
-    ProjectsConverter projectsConverter;
+    private DevelopersConverter developersConverter;
+    private ProjectsConverter projectsConverter;
 
     public CompanyConverter(DevelopersConverter developersConverter, ProjectsConverter projectsConverter) {
         this.developersConverter = developersConverter;

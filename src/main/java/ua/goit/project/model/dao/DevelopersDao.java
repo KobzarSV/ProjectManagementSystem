@@ -37,7 +37,6 @@ public class DevelopersDao {
     }
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {
         return id;
@@ -92,8 +91,6 @@ public class DevelopersDao {
         this.mail = mail;
     }
 
-//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-//    @JoinColumn(name="company_id")
     @Column(name = "company_id")
     public Integer getCompanyId() {
         return companyId;

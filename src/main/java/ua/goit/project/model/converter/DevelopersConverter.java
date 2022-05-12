@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class DevelopersConverter implements Convertor<DevelopersDao, DevelopersDto> {
 
-    SkillsConverter skillsConverter;
+    private SkillsConverter skillsConverter;
 
     public DevelopersConverter(SkillsConverter skillsConverter) {
         this.skillsConverter = skillsConverter;

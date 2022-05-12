@@ -1,6 +1,5 @@
 package ua.goit.project.model.dao;
 
-
 import jakarta.persistence.*;
 
 @Entity
@@ -22,7 +21,6 @@ public class CompaniesDao {
     }
 
     @Id
-    @Column(name = "company_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {
         return id;

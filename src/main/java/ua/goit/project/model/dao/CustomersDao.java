@@ -19,7 +19,6 @@ public class CustomersDao {
     }
 
     @Id
-    @Column(name = "customer_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {
         return id;
